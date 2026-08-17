@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevDesk — Task 2 | Intermediate HTML, CSS &amp; JavaScript</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+    --bg:#0b0f14;
+    --panel:#11171f;
+    --panel-2:#151c26;
+    --line:#232b36;
+    --text:#e7edf3;
+    --muted:#8a97a6;
+    --mint:#5eead4;
+    --mint-dim:#2d3f3c;
+    --amber:#f5a623;
+    --red:#ff6b6b;
+    --radius:10px;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(94,234,212,0.06), transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(245,166,35,0.05), transparent 35%);
+  }
+
+  a{color:inherit;}
+  ::selection{background:var(--mint); color:#04110f;}
+
+  /* ---------- utility: terminal window chrome ---------- */
+  .win{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .win__bar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 14px;
+    background:var(--panel-2);
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+  }
+  .win__dots{display:flex; gap:6px;}
+  .win__dots span{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  .win__dots span:nth-child(1){background:#ff5f57;}
+  .win__dots span:nth-child(2){background:#febc2e;}
+  .win__dots span:nth-child(3){background:#28c840;}
+  .win__title{margin-left:6px;}
+  .win__body{padding:24px;}
+
+  /* ---------- NAV (Flexbox) ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:16px clamp(20px,5vw,64px);
+    background:rgba(11,15,20,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:700; letter-spacing:.02em;}
+  .brand__glyph{
+    width:30px; height:30px; border-radius:7px;
+    background:linear-gradient(135deg, var(--mint), #2fbfa8);
+    display:flex; align-items:center; justify-content:center;
+    color:#04110f; font-weight:800; font-size:15px;
+  }
+  .brand small{display:block; font-family:var(--sans); font-weight:400; color:var(--muted); font-size:11px;}
+
+  nav.links{display:flex; gap:28px; font-size:14px; font-weight:500;}
+  nav.links a{color:var(--muted); text-decoration:none; transition:color .15s;}
+  nav.links a:hover, nav.links a:focus-visible{color:var(--mint);}
+
+  .nav-cta{
+    font-family:var(--mono); font-size:12px;
+    padding:8px 14px; border-radius:7px;
+    border:1px solid var(--mint-dim);
+    color:var(--mint); text-decoration:none;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:rgba(94,234,212,0.08);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:clamp(48px,8vw,96px) clamp(20px,5vw,64px) 40px;
+    max-width:1200px; margin:0 auto;
+  }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--amber);
+    letter-spacing:.08em; text-transform:uppercase;
+    display:flex; align-items:center; gap:8px; margin-bottom:18px;
+  }
+  .eyebrow::before{content:"$"; color:var(--muted);}
+  h1{
+    font-family:var(--mono);
+    font-size:clamp(30px,5vw,52px);
+    line-height:1.1;
+    margin:0 0 18px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+  }
+  h1 .accent{color:var(--mint);}
+  .hero p.lede{
+    color:var(--muted); font-size:17px; max-width:640px; margin:0 0 28px;
+  }
+  .hero-meta{
+    display:flex; flex-wrap:wrap; gap:12px;
+  }
+  .chip{
+    font-family:var(--mono); font-size:12px;
+    padding:6px 12px; border-radius:999px;
+    border:1px solid var(--line); color:var(--muted);
+    background:var(--panel);
+  }
+  .chip b{color:var(--text);}
+
+  /* ---------- SECTION HEADINGS ---------- */
+  .section{
+    max-width:1200px; margin:0 auto;
+    padding:52px clamp(20px,5vw,64px) 0;
+  }
+  .section__head{margin-bottom:22px;}
+  .section__num{
+    font-family:var(--mono); color:var(--mint); font-size:13px; margin-bottom:6px;
+  }
+  .section h2{
+    font-family:var(--mono); font-size:clamp(22px,3vw,30px); margin:0 0 8px;
+    font-weight:700;
+  }
+  .section p.desc{color:var(--muted); margin:0; max-width:600px; font-size:15px;}
+
+  /* ---------- RESPONSIVE LAYOUT: CSS GRID ---------- */
+  .layout-grid{
+    display:grid;
+    grid-template-columns: 2fr 1fr;
+    gap:20px;
+    margin-top:24px;
+  }
+  .grid-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px;
+  }
+  .grid-card h3{
+    font-family:var(--mono); font-size:14px; margin:0 0 10px; color:var(--mint);
+  }
+  .grid-card p{color:var(--muted); font-size:14px; margin:0;}
+  .grid-mini{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px;
+  }
+  .mini{
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:14px; font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+  .mini b{display:block; color:var(--text); font-size:20px; margin-bottom:4px;}
+
+  @media (max-width: 860px){
+    .layout-grid{grid-template-columns:1fr;}
+    .grid-mini{grid-template-columns:1fr 1fr;}
+    nav.links{display:none;}
+  }
+  @media (max-width: 520px){
+    .grid-mini{grid-template-columns:1fr;}
+  }
+
+  /* ---------- CONTACT FORM ---------- */
+  form#contactForm{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 20px;
+  }
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field.full{grid-column:1 / -1;}
+  label{
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+  label .req{color:var(--amber);}
+  input, textarea, select{
+    font-family:var(--sans); font-size:14px;
+    background:var(--panel-2); color:var(--text);
+    border:1px solid var(--line); border-radius:7px;
+    padding:11px 12px;
+    outline:none;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  textarea{resize:vertical; min-height:100px;}
+  input:focus, textarea:focus, select:focus{
+    border-color:var(--mint);
+    box-shadow:0 0 0 3px rgba(94,234,212,0.12);
+  }
+  input.invalid, textarea.invalid{
+    border-color:var(--red);
+    box-shadow:0 0 0 3px rgba(255,107,107,0.1);
+  }
+  .error-msg{
+    font-size:12px; color:var(--red); min-height:14px; font-family:var(--mono);
+  }
+  .field-topic{
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .radio-pill{
+    display:flex; align-items:center; gap:6px;
+    font-size:13px; color:var(--muted);
+    background:var(--panel-2); border:1px solid var(--line);
+    padding:8px 12px; border-radius:999px; cursor:pointer;
+  }
+  .radio-pill input{accent-color:var(--mint); width:auto; padding:0;}
+  .submit-row{
+    grid-column:1 / -1;
+    display:flex; align-items:center; gap:16px; margin-top:6px;
+  }
+  button.btn{
+    font-family:var(--mono); font-weight:600; font-size:14px;
+    background:var(--mint); color:#04110f;
+    border:none; border-radius:7px;
+    padding:12px 22px; cursor:pointer;
+    transition:transform .1s, background .15s;
+  }
+  button.btn:hover{background:#7ff2e2;}
+  button.btn:active{transform:scale(0.98);}
+  .form-status{
+    font-family:var(--mono); font-size:13px; color:var(--muted); min-height:18px;
+  }
+  .form-status.ok{color:var(--mint);}
+
+  @media (max-width:700px){
+    form#contactForm{grid-template-columns:1fr;}
+  }
+
+  /* ---------- TODO LIST ---------- */
+  .todo-wrap{max-width:640px;}
+  .todo-input-row{display:flex; gap:10px;}
+  .todo-input-row input{flex:1;}
+  .todo-stats{
+    display:flex; gap:16px; margin:16px 0 4px;
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+  .todo-stats b{color:var(--text);}
+  ul#todoList{
+    list-style:none; margin:12px 0 0; padding:0;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  ul#todoList li{
+    display:flex; align-items:center; gap:12px;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:8px;
+    padding:12px 14px;
+    animation:fadeIn .18s ease;
+  }
+  @keyframes fadeIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+  ul#todoList li .check{
+    width:18px; height:18px; border-radius:5px; border:1.5px solid var(--muted);
+    cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    color:#04110f; font-size:12px;
+  }
+  ul#todoList li.done .check{background:var(--mint); border-color:var(--mint); content:'✓';}
+  ul#todoList li.done .task-text{color:var(--muted); text-decoration:line-through;}
+  ul#todoList li .task-text{flex:1; font-size:14px; word-break:break-word;}
+  ul#todoList li .remove-btn{
+    background:none; border:none; color:var(--muted); cursor:pointer;
+    font-family:var(--mono); font-size:16px; line-height:1; padding:4px 6px; border-radius:5px;
+  }
+  ul#todoList li .remove-btn:hover{color:var(--red); background:rgba(255,107,107,0.08);}
+  .todo-empty{
+    text-align:center; color:var(--muted); font-family:var(--mono); font-size:13px;
+    padding:28px 0;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    margin-top:70px; border-top:1px solid var(--line);
+    padding:26px clamp(20px,5vw,64px) 40px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);
+  }
+
+  /* focus visibility for a11y */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--mint); outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="brand">
+    <span class="brand__glyph">&lt;/&gt;</span>
+    <div>
+      DevDesk
+      <small>ApexPlanet · Task 2</small>
+    </div>
+  </div>
+  <nav class="links">
+    <a href="#layout">Layout</a>
+    <a href="#contact">Contact Form</a>
+    <a href="#todo">Task List</a>
+  </nav>
+  <a class="nav-cta" href="#contact">Get in touch →</a>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">task-2 / intermediate-web-dev</div>
+  <h1>Forms, layout &amp; the <span class="accent">DOM</span> —<br> built by hand, no frameworks.</h1>
+  <p class="lede">
+    A single page assembling everything from this sprint: a validated contact form,
+    a responsive Flexbox + Grid layout, and a dynamic to-do list wired up with vanilla JavaScript.
+  </p>
+  <div class="hero-meta">
+    <span class="chip">Timeline: <b>9 days</b></span>
+    <span class="chip">Stack: <b>HTML · CSS · JS</b></span>
+    <span class="chip">Status: <b>Complete</b></span>
+  </div>
+</section>
+
+<!-- ===================== 3. RESPONSIVE LAYOUT (Flexbox + Grid) ===================== -->
+<section class="section" id="layout">
+  <div class="section__head">
+    <div class="section__num">03 — Responsive Layout</div>
+    <h2>Flexbox for navigation, CSS Grid for content</h2>
+    <p class="desc">The nav bar above uses Flexbox to align the brand, links, and CTA. Below, a two-column CSS Grid holds the main content and a stats sidebar — it collapses to a single column under 860px.</p>
+  </div>
+
+  <div class="layout-grid">
+    <div class="grid-card">
+      <h3>main-content</h3>
+      <p>This panel spans two grid tracks on desktop. Resize the window (or check this on your phone) — the grid reflows to one column, and the sidebar stacks underneath automatically via a media query, with no JavaScript involved.</p>
+      <div class="grid-mini">
+        <div class="mini"><b>Grid</b>layout engine</div>
+        <div class="mini"><b>Flex</b>nav alignment</div>
+        <div class="mini"><b>1</b>breakpoint</div>
+      </div>
+    </div>
+    <div class="grid-card">
+      <h3>sidebar</h3>
+      <p>Sits in the second track on wide screens. On narrow screens it drops below the main panel, preserving reading order for accessibility.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 1 & 2. CONTACT FORM + VALIDATION ===================== -->
+<section class="section" id="contact">
+  <div class="win">
+    <div class="win__bar">
+      <div class="win__dots"><span></span><span></span><span></span></div>
+      <div class="win__title">contact-form.html — validated</div>
+    </div>
+    <div class="win__body">
+      <div class="section__head" style="margin-bottom:20px;">
+        <div class="section__num">01 + 02 — Contact Form &amp; Validation</div>
+        <h2>Send a message</h2>
+        <p class="desc">Required fields and email format are checked live with JavaScript, before the form can submit.</p>
+      </div>
+
+      <form id="contactForm" novalidate>
+        <div class="field">
+          <label for="name">Full name <span class="req">*</span></label>
+          <input type="text" id="name" name="name" placeholder="Jordan Rivera" autocomplete="name">
+          <div class="error-msg" id="err-name"></div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email address <span class="req">*</span></label>
+          <input type="email" id="email" name="email" placeholder="jordan@example.com" autocomplete="email">
+          <div class="error-msg" id="err-email"></div>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone (optional)</label>
+          <input type="tel" id="phone" name="phone" placeholder="+91 90000 00000" autocomplete="tel">
+          <div class="error-msg" id="err-phone"></div>
+        </div>
+
+        <div class="field">
+          <label for="company">Company (optional)</label>
+          <input type="text" id="company" name="company" placeholder="ApexPlanet Software">
+          <div class="error-msg"></div>
+        </div>
+
+        <div class="field full">
+          <label>Topic <span class="req">*</span></label>
+          <div class="field-topic" id="topicGroup">
+            <label class="radio-pill"><input type="radio" name="topic" value="internship"> Internship</label>
+            <label class="radio-pill"><input type="radio" name="topic" value="project"> Project inquiry</label>
+            <label class="radio-pill"><input type="radio" name="topic" value="other"> Other</label>
+          </div>
+          <div class="error-msg" id="err-topic"></div>
+        </div>
+
+        <div class="field full">
+          <label for="message">Message <span class="req">*</span></label>
+          <textarea id="message" name="message" placeholder="Tell me a little about what you need..."></textarea>
+          <div class="error-msg" id="err-message"></div>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn">Submit message</button>
+          <span class="form-status" id="formStatus"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. DYNAMIC TO-DO LIST (DOM manipulation) ===================== -->
+<section class="section" id="todo">
+  <div class="win todo-wrap">
+    <div class="win__bar">
+      <div class="win__dots"><span></span><span></span><span></span></div>
+      <div class="win__title">todo.js — DOM manipulation</div>
+    </div>
+    <div class="win__body">
+      <div class="section__head" style="margin-bottom:16px;">
+        <div class="section__num">04 — Dynamic To-Do List</div>
+        <h2>Sprint tasks</h2>
+        <p class="desc">Add tasks, mark them complete, or remove them — all handled with vanilla JS DOM manipulation, no page reloads.</p>
+      </div>
+
+      <div class="todo-input-row">
+        <label for="todoInput" class="visually-hidden">New task</label>
+        <input type="text" id="todoInput" placeholder="e.g. Style the contact form with CSS">
+        <button class="btn" id="addTodoBtn" type="button">Add task</button>
+      </div>
+
+      <div class="todo-stats">
+        <span>Total: <b id="statTotal">0</b></span>
+        <span>Active: <b id="statActive">0</b></span>
+        <span>Done: <b id="statDone">0</b></span>
+      </div>
+
+      <ul id="todoList"></ul>
+      <div class="todo-empty" id="todoEmpty">No tasks yet — add your first one above.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 ApexPlanet Software Pvt Ltd — Internship Task 2</span>
+  <span>Built with plain HTML, CSS &amp; JavaScript</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CONTACT FORM VALIDATION ============ */
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+
+  const fields = {
+    name:    { el: document.getElementById('name'),    err: document.getElementById('err-name') },
+    email:   { el: document.getElementById('email'),   err: document.getElementById('err-email') },
+    phone:   { el: document.getElementById('phone'),   err: document.getElementById('err-phone') },
+    message: { el: document.getElementById('message'), err: document.getElementById('err-message') }
+  };
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phonePattern = /^[0-9+\-()\s]{7,}$/;
+
+  function setError(field, msg){
+    field.el.classList.toggle('invalid', !!msg);
+    field.err.textContent = msg || '';
+  }
+
+  function validateName(){
+    const v = fields.name.el.value.trim();
+    if (!v){ setError(fields.name, 'Please enter your name.'); return false; }
+    if (v.length < 2){ setError(fields.name, 'Name looks too short.'); return false; }
+    setError(fields.name, ''); return true;
+  }
+
+  function validateEmail(){
+    const v = fields.email.el.value.trim();
+    if (!v){ setError(fields.email, 'Email is required.'); return false; }
+    if (!emailPattern.test(v)){ setError(fields.email, 'Enter a valid email address.'); return false; }
+    setError(fields.email, ''); return true;
+  }
+
+  function validatePhone(){
+    const v = fields.phone.el.value.trim();
+    if (v && !phonePattern.test(v)){ setError(fields.phone, 'Enter a valid phone number.'); return false; }
+    setError(fields.phone, ''); return true;
+  }
+
+  function validateTopic(){
+    const checked = document.querySelector('input[name="topic"]:checked');
+    const err = document.getElementById('err-topic');
+    if (!checked){ err.textContent = 'Please choose a topic.'; return false; }
+    err.textContent = ''; return true;
+  }
+
+  function validateMessage(){
+    const v = fields.message.el.value.trim();
+    if (!v){ setError(fields.message, 'Please add a short message.'); return false; }
+    if (v.length < 10){ setError(fields.message, 'Message should be at least 10 characters.'); return false; }
+    setError(fields.message, ''); return true;
+  }
+
+  fields.name.el.addEventListener('blur', validateName);
+  fields.email.el.addEventListener('blur', validateEmail);
+  fields.phone.el.addEventListener('blur', validatePhone);
+  fields.message.el.addEventListener('blur', validateMessage);
+  document.getElementById('topicGroup').addEventListener('change', validateTopic);
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const validations = [validateName(), validateEmail(), validatePhone(), validateTopic(), validateMessage()];
+    const allValid = validations.every(Boolean);
+
+    if (!allValid){
+      status.textContent = 'Please fix the highlighted fields.';
+      status.classList.remove('ok');
+      const firstInvalid = form.querySelector('.invalid') || document.getElementById('err-topic').textContent ? document.getElementById('topicGroup') : null;
+      if (firstInvalid && firstInvalid.focus) firstInvalid.focus();
+      return;
+    }
+
+    status.textContent = 'Message sent — thank you! (demo only, not actually transmitted)';
+    status.classList.add('ok');
+    form.reset();
+    document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  });
+
+  /* ============ DYNAMIC TO-DO LIST ============ */
+  const todoInput = document.getElementById('todoInput');
+  const addBtn = document.getElementById('addTodoBtn');
+  const list = document.getElementById('todoList');
+  const emptyState = document.getElementById('todoEmpty');
+  const statTotal = document.getElementById('statTotal');
+  const statActive = document.getElementById('statActive');
+  const statDone = document.getElementById('statDone');
+
+  let tasks = [
+    { id: 1, text: 'Build contact form markup', done: true },
+    { id: 2, text: 'Wire up JS validation', done: true },
+    { id: 3, text: 'Style responsive grid layout', done: false }
+  ];
+  let nextId = 4;
+
+  function render(){
+    list.innerHTML = '';
+    emptyState.style.display = tasks.length ? 'none' : 'block';
+
+    tasks.forEach(task => {
+      const li = document.createElement('li');
+      li.className = task.done ? 'done' : '';
+      li.dataset.id = task.id;
+
+      const check = document.createElement('span');
+      check.className = 'check';
+      check.setAttribute('role','checkbox');
+      check.setAttribute('aria-checked', task.done ? 'true' : 'false');
+      check.setAttribute('tabindex','0');
+      check.textContent = task.done ? '✓' : '';
+      check.addEventListener('click', () => toggleTask(task.id));
+      check.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleTask(task.id);} });
+
+      const span = document.createElement('span');
+      span.className = 'task-text';
+      span.textContent = task.text;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.type = 'button';
+      removeBtn.setAttribute('aria-label', 'Remove task: ' + task.text);
+      removeBtn.textContent = '✕';
+      removeBtn.addEventListener('click', () => removeTask(task.id));
+
+      li.appendChild(check);
+      li.appendChild(span);
+      li.appendChild(removeBtn);
+      list.appendChild(li);
+    });
+
+    statTotal.textContent = tasks.length;
+    statDone.textContent = tasks.filter(t => t.done).length;
+    statActive.textContent = tasks.filter(t => !t.done).length;
+  }
+
+  function addTask(){
+    const text = todoInput.value.trim();
+    if (!text) { todoInput.focus(); return; }
+    tasks.push({ id: nextId++, text, done: false });
+    todoInput.value = '';
+    todoInput.focus();
+    render();
+  }
+
+  function toggleTask(id){
+    tasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+    render();
+  }
+
+  function removeTask(id){
+    tasks = tasks.filter(t => t.id !== id);
+    render();
+  }
+
+  addBtn.addEventListener('click', addTask);
+  todoInput.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); addTask(); } });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
